@@ -1,6 +1,8 @@
 import queue
 import json
 
+NULLSEC = False  # Set this to true to include nullsec systems in the list of systems, this makes the json file very large
+
 
 def get_distances(nodes, start_node):
     visited = {}
@@ -33,7 +35,7 @@ def compute():
             array = line.strip().split(',')
             system_id = int(array[0])
             security = float(array[5])
-            if security > -5:
+            if security > 0 or NULLSEC:
                 neighbors = []
                 for x in array[6].strip().split(':'):
                     try:
@@ -56,9 +58,11 @@ def compute():
             array = line.strip().split(',')
             system_id = int(array[0])
             security = float(array[5])
-            output_systems[system_id] = distances[system_id]
-    with open("output.json",'w') as output:
-        json.dump(output_systems,output)
+            if security > 0 or NULLSEC:
+                output_systems[system_id] = distances[system_id]
+    with open("output.json", 'w') as output:
+        json.dump(output_systems, output)
+
 
 if __name__ == "__main__":
     compute()
