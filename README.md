@@ -1,5 +1,5 @@
 # Traveling-Mission-Man
-Start by running precompute.py to generate the json file for travelingmissionman.py
+precompute.py generates the json file for travelingmissionman.py, but the included json in the repo has all systems outside of nullsec and should be fine.
 
 Input system names, cap sensitive, into missions.txt and then run travelingmissionman.py
 It outputs an optimal list of jumps from system to system. It assumes that the first system in the list is the desired start system.
