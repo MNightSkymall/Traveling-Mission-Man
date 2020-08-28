@@ -26,8 +26,10 @@ def main():
 
     mission_systems = []
     found_systems = True
+    total_systems = 0
     with open('missions.txt') as input_file:
         for line in input_file:
+            total_systems += 1
             system_name = line.strip()
             try:
                 system_id = system_ids[system_name]
@@ -38,6 +40,9 @@ def main():
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
         print("Could not find all the systems in missions.txt, please check and retry.")
+        exit()
+    if total_systems < 2:
+        print("Requires at least 2 systems.")
         exit()
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
