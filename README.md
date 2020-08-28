@@ -7,10 +7,7 @@ It outputs an optimal list of jumps from system to system. It assumes that the f
 systems.csv includes a list of all systems in Eve Echoes by name and system id and their neighbors.
 output.json is a hash of hashes storing the number of jumps between systems by systemid.
 
-Example output:
-Begin at 10:00:06
-Finished loading json at 10:00:06
-Found shortest_path at 10:00:06
+Example output:   
 Bridi -> 3 jumps -> Noranim   
 Noranim -> 2 jumps -> Gayar   
 Gayar -> 2 jumps -> Petidu   
