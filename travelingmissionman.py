@@ -36,7 +36,7 @@ def main():
             except KeyError:
                 if system_name != "":
                     found_systems = False
-                    print("Unable to find system", system_name)
+                    print(f"Line {total_systems}: Unable to find system {system_name}")
             if system_name != "": mission_systems.append(system_id)
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
