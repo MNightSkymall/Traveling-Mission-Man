@@ -18,6 +18,7 @@ def calculate_distance_and_constrain(systems, distances, constraints):
 
 def check_name(name, system_ids, total_systems):
     try:
+        name = name.strip().lower()
         system_id = system_ids[name]
     except KeyError:
         if name != "":
@@ -34,7 +35,7 @@ def main():
         for line in system_names:
             array = line.strip().split(",")
             system_id = array[0].strip()
-            system_name = array[4].strip()
+            system_name = array[4].strip().lower()
             names[system_id] = system_name
             system_ids[system_name] = system_id
 
@@ -47,8 +48,8 @@ def main():
             found_system_one = True
             found_system_two = True
             total_lines += 1
-            array = line.strip().split(',')
-            system_one_name = array[0]
+            array = line.lower().strip().split(',')
+            system_one_name = array[0].strip()
             found_system_one = check_name(system_one_name, system_ids, total_lines)
             if found_system_one and system_one_name != "":
                 system_one_id = system_ids[system_one_name]
@@ -57,7 +58,7 @@ def main():
             if len(array) > 2:
                 print("Line", total_lines, ": Only 2 systems per line in constraints system.")
             elif len(array) == 2:
-                system_two_name = array[1]
+                system_two_name = array[1].strip()
                 found_system_two = check_name(system_two_name, system_ids, total_lines)
                 if found_system_two and system_two_name != "":
                     system_two_id = system_ids[system_two_name]
