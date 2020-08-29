@@ -1,9 +1,11 @@
 Bridi
-Daran
-Keshirou
+Daran,1
+Keshirou,1
 Noranim
 Sibot
-Porsharrah
+Porsharrah,1
 Gayar
 Jedandan
 Petidu
+Sifilar
+Saikamon

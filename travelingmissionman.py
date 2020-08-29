@@ -12,6 +12,16 @@ def calculate_distance(systems, distances):
     return dist
 
 
+def check_priority(systems, priorities):
+    cur_prio = 0
+    for item in systems:
+        if cur_prio <= priorities[item]:
+            cur_prio = priorities[item]
+        else:
+            return False
+    return True
+
+
 def main():
     names = {}
     system_ids = {}
@@ -27,15 +37,23 @@ def main():
     mission_systems = []
     found_systems = True
     total_systems = 0
+    using_priority = False
+    priorities = {}
     with open('missions.txt') as input_file:
         for line in input_file:
             total_systems += 1
-            system_name = line.strip()
+            array = line.strip().split(',')
+            system_name = array[0]
             try:
                 system_id = system_ids[system_name]
             except KeyError:
                 found_systems = False
                 print("Unable to find system", system_name)
+            try:
+                priorities[system_id] = int(array[1])
+                using_priority = True
+            except IndexError:
+                priorities[system_id] = 0
             mission_systems.append(system_id)
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
@@ -56,6 +74,10 @@ def main():
     min_path_distance = 1000000000
 
     for permutation in itertools.permutations(mission_systems):
+        if using_priority:
+            valid_priority = check_priority(permutation, priorities)
+            if not valid_priority:
+                continue
         total_path = tuple(start_system) + permutation
         distance = calculate_distance(total_path, distances)
         if distance < min_path_distance:
@@ -74,7 +96,7 @@ def main():
         print(first_system_name, "->", jump_distance, "jumps ->", second_system_name)
         # print(names)
         # short_systems.append(names[item])
-    print("Total distance",min_path_distance,"jumps.")
+    print("Total distance", min_path_distance, "jumps.")
     # print(short_systems, min_path_distance)
 
 
