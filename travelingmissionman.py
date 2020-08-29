@@ -12,12 +12,22 @@ def calculate_distance(systems, distances):
     return dist
 
 
-def check_priority(systems, priorities):
+def check_constraints(systems, constraints):
     cur_prio = 0
     for item in systems:
-        if cur_prio <= priorities[item]:
-            cur_prio = priorities[item]
+        if cur_prio <= constraints[item]:
+            cur_prio = constraints[item]
         else:
+            return False
+    return True
+
+
+def check_name(name, system_ids, total_systems):
+    try:
+        system_id = system_ids[name]
+    except KeyError:
+        if name != "":
+            print("Line", total_systems, ": Unable to find system {name}")
             return False
     return True
 
@@ -36,30 +46,42 @@ def main():
 
     mission_systems = []
     found_systems = True
-    total_systems = 0
-    using_priority = False
-    priorities = {}
+    total_lines = 0
+    using_constraints = False
+    constraints = {}
     with open('missions.txt') as input_file:
         for line in input_file:
-            total_systems += 1
+            total_lines += 1
             array = line.strip().split(',')
-            system_name = array[0]
+            system_one_name = array[0]
+            found_system_one = check_name(system_one_name, system_ids, total_lines)
+            if found_system_one and system_one_name != "":
+                system_one_id = system_ids[system_one_name]
+                system_ids.append(system_one_id)
+            if len(array) > 2:
+                print("Line", total_lines, ": Only 2 systems per line in constraints system.")
+            elif len(array) == 2:
+                system_two_name = array[2]
+                found_system_two = check_name(system_two_name, system_ids, total_lines)
+                if found_system_two and system_two_name != "":
+                    constraints[system_one_id]
             try:
-                system_id = system_ids[system_name]
-            except KeyError:
-                found_systems = False
-                print("Unable to find system", system_name)
-            try:
-                priorities[system_id] = int(array[1])
-                using_priority = True
+                found_systems = check_name(system_name, system_ids, total_lines) and found_systems
+                try:
+                    system_id = system_ids[system_name]
+                except KeyError:
+                    found_systems = False
+                    print("Unable to find system", system_name)
+                mission_systems.append(array[1])
+                using_constraints = True
             except IndexError:
-                priorities[system_id] = 0
+                constraints[system_id] = None
             mission_systems.append(system_id)
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
         print("Could not find all the systems in missions.txt, please check and retry.")
         exit()
-    if total_systems < 2:
+    if total_lines < 2:
         print("Requires at least 2 systems.")
         exit()
     now = datetime.now()
@@ -74,8 +96,8 @@ def main():
     min_path_distance = 1000000000
 
     for permutation in itertools.permutations(mission_systems):
-        if using_priority:
-            valid_priority = check_priority(permutation, priorities)
+        if using_constraints:
+            valid_priority = check_constraints(permutation, constraints)
             if not valid_priority:
                 continue
         total_path = tuple(start_system) + permutation

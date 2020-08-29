@@ -1,11 +1,4 @@
-Bridi
-Daran,1
-Keshirou,1
-Noranim
+Bridi,Daran
+Keshirou,Noranim
 Sibot
-Porsharrah,1
-Gayar
-Jedandan
-Petidu
-Sifilar
-Saikamon
+Porsharrah
