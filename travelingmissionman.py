@@ -2,24 +2,18 @@ import json, itertools
 from datetime import datetime
 
 
-def calculate_distance(systems, distances):
+def calculate_distance_and_constrain(systems, distances, constraints):
     dist = 0
+    visited = []
     for i in range(len(systems) - 1):
         first_system = systems[i]
         second_system = systems[i + 1]
+        visited.append(first_system)
+        if constraints[second_system] is not None and not constraints[second_system] in visited:
+            return 999999999
         distances[first_system][second_system]
         dist += distances[systems[i]][systems[i + 1]]
     return dist
-
-
-def check_constraints(systems, constraints):
-    cur_prio = 0
-    for item in systems:
-        if cur_prio <= constraints[item]:
-            cur_prio = constraints[item]
-        else:
-            return False
-    return True
 
 
 def check_name(name, system_ids, total_systems):
@@ -27,7 +21,7 @@ def check_name(name, system_ids, total_systems):
         system_id = system_ids[name]
     except KeyError:
         if name != "":
-            print("Line", total_systems, ": Unable to find system {name}")
+            print("Line", total_systems, ": Unable to find system",name)
             return False
     return True
 
@@ -47,36 +41,29 @@ def main():
     mission_systems = []
     found_systems = True
     total_lines = 0
-    using_constraints = False
     constraints = {}
     with open('missions.txt') as input_file:
         for line in input_file:
+            found_system_one = True
+            found_system_two = True
             total_lines += 1
             array = line.strip().split(',')
             system_one_name = array[0]
             found_system_one = check_name(system_one_name, system_ids, total_lines)
             if found_system_one and system_one_name != "":
                 system_one_id = system_ids[system_one_name]
-                system_ids.append(system_one_id)
+                mission_systems.append(system_one_id)
+                constraints[system_one_id] = None
             if len(array) > 2:
                 print("Line", total_lines, ": Only 2 systems per line in constraints system.")
             elif len(array) == 2:
-                system_two_name = array[2]
+                system_two_name = array[1]
                 found_system_two = check_name(system_two_name, system_ids, total_lines)
                 if found_system_two and system_two_name != "":
-                    constraints[system_one_id]
-            try:
-                found_systems = check_name(system_name, system_ids, total_lines) and found_systems
-                try:
-                    system_id = system_ids[system_name]
-                except KeyError:
-                    found_systems = False
-                    print("Unable to find system", system_name)
-                mission_systems.append(array[1])
-                using_constraints = True
-            except IndexError:
-                constraints[system_id] = None
-            mission_systems.append(system_id)
+                    system_two_id = system_ids[system_two_name]
+                    constraints[system_two_id] = system_one_id
+                    mission_systems.append(system_two_id)
+            found_systems = found_systems and found_system_one and found_system_two
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
         print("Could not find all the systems in missions.txt, please check and retry.")
@@ -96,12 +83,8 @@ def main():
     min_path_distance = 1000000000
 
     for permutation in itertools.permutations(mission_systems):
-        if using_constraints:
-            valid_priority = check_constraints(permutation, constraints)
-            if not valid_priority:
-                continue
         total_path = tuple(start_system) + permutation
-        distance = calculate_distance(total_path, distances)
+        distance = calculate_distance_and_constrain(total_path, distances, constraints)
         if distance < min_path_distance:
             shortest_path = total_path
             min_path_distance = distance

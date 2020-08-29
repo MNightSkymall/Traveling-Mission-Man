@@ -1,4 +1,9 @@
-Bridi,Daran
-Keshirou,Noranim
+Bridi
+Daran
+Keshirou
+Noranim,Petidu
 Sibot
 Porsharrah
+Gayar
+Jedandan
+Sifilar,Saikamon
