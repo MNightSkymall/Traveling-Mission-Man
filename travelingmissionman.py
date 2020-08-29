@@ -34,9 +34,10 @@ def main():
             try:
                 system_id = system_ids[system_name]
             except KeyError:
-                found_systems = False
-                print("Unable to find system", system_name)
-            mission_systems.append(system_id)
+                if system_name != "":
+                    found_systems = False
+                    print(f"Line {total_systems}: Unable to find system {system_name}")
+            if system_name != "": mission_systems.append(system_id)
     start_system = [mission_systems.pop(0)]
     if found_systems is False:
         print("Could not find all the systems in missions.txt, please check and retry.")
